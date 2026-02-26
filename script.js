@@ -20,7 +20,9 @@ const seeds = [33,34,35,36,37,38,39,40,41,42];
     totalSum += sum;
   }
 
-  console.log("FINAL TOTAL:", totalSum);
+
+console.log(`FINAL TOTAL: ${totalSum}`);
+console.log("SUM =", totalSum);
 
   await browser.close();
 })();
