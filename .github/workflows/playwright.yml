@@ -1,24 +1,23 @@
-name: Playwright QA Check
+name: Scrape Table Sums (23f3004254@ds.study.iitm.ac.in)
 
-on: [push]
+on: [push]  # Runs on every push to any branch
 
 jobs:
-  test:
+  scrape:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js (SHIVAM: 23f3004254@ds.study.iitm.ac.in)
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-
+          node-version: 20
+      
       - name: Install dependencies
-        run: |
-          npm install
-          npx playwright install
-
-      - name: Run Playwright Script 23f3004254@ds.study.iitm.ac.in
-        run: node script.js
+        run: npm install
+      
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+      
+      - name: Run scraper and log total
+        run: node scraper.js
