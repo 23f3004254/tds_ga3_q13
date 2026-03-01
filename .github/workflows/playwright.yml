@@ -6,18 +6,18 @@ jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js (SHIVAM: 23f3004254@ds.study.iitm.ac.in)
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-      
+          node-version: '18'
+
       - name: Install dependencies
-        run: npm install
-      
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-      
-      - name: Run scraper and log total
-        run: node scraper.js
+        run: |
+          npm install
+          npx playwright install
+
+      - name: Run Playwright Script 23f3004254@ds.study.iitm.ac.in
+        run: node script.js
