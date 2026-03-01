@@ -1,28 +1,41 @@
-import { chromium } from 'playwright';
-
-const seeds = [33,34,35,36,37,38,39,40,41,42];
+const { chromium } = require('playwright');
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
+  let globalSum = 0;
 
-  let totalSum = 0;
+  const urls = [
+    'https://sanand0.github.io/tdsdata/js_table/?seed=33',
+    'https://sanand0.github.io/tdsdata/js_table/?seed=34',
+    'https://sanand0.github.io/tdsdata/js_table/?seed=35',
+    'https://sanand0.github.io/tdsdata/js_table/?seed=36',
+    'https://sanand0.github.io/tdsdata/js_table/?seed=37',
+    'https://sanand0.github.io/tdsdata/js_table/?seed=38',
+    'https://sanand0.github.io/tdsdata/js_table/?seed=39',
+    'https://sanand0.github.io/tdsdata/js_table/?seed=40',
+    'https://sanand0.github.io/tdsdata/js_table/?seed=41',
+    'https://sanand0.github.io/tdsdata/js_table/?seed=42'
+  ];
 
-  for (let seed of seeds) {
-    const url = `https://tds-playwright.vercel.app/?seed=${seed}`;
-    await page.goto(url);
+  for (const url of urls) {
+    console.log(`Visiting: ${url}`);
+    await page.goto(url, { waitUntil: 'networkidle' });  // Waits for dynamic tables to load
 
-    const numbers = await page.$$eval('table td', tds =>
-      tds.map(td => parseFloat(td.innerText)).filter(n => !isNaN(n))
+    // Find all table cells and extract numbers
+    const numbers = await page.$$eval('table td, table th', els =>
+      els.flatMap(el => {
+        const text = el.textContent.trim();
+        const num = parseFloat(text);
+        return isNaN(num) ? [] : [num];
+      })
     );
 
-    const sum = numbers.reduce((a, b) => a + b, 0);
-    totalSum += sum;
+    const pageSum = numbers.reduce((a, b) => a + b, 0);
+    globalSum += pageSum;
+    console.log(`Page sum: ${pageSum.toFixed(2)}, Running total: ${globalSum.toFixed(2)}`);
   }
 
-
-console.log(`FINAL TOTAL: ${totalSum}`);
-console.log("SUM =", totalSum);
-
+  console.log(`\nFINAL TOTAL SUM: ${globalSum.toFixed(2)}`);
   await browser.close();
 })();
